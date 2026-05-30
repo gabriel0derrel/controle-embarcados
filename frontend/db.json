@@ -1,0 +1,19 @@
+{
+  "usuarios": [
+    {
+      "nome": "MONICA J. SILVA",
+      "email": "monica@gmail.com",
+      "senha": "123456",
+      "status": "inativo",
+      "id": "137c"
+    },
+    {
+      "nome": "MIGULE C. ",
+      "email": "miguel@gmail.com",
+      "senha": "dandan",
+      "status": "inativo",
+      "id": "0f1d"
+    },
+  
+  ]
+}
