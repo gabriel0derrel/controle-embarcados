@@ -3,6 +3,8 @@ import time
 import json
 import machine
 import os
+import socket
+import _thread  # Usado para rodar o servidor DNS em segundo plano
 
 # Configurações do Access Point do ESP32
 AP_SSID = "ESP32_Setup"
@@ -31,7 +33,6 @@ def conectar_wifi(ssid, password):
     print(f"Tentando conectar ao Wi-Fi: {ssid}...")
     sta_if.connect(ssid, password)
     
-    # Tenta conectar por até 15 segundos (timeout)
     tentativas = 0
     while not sta_if.isconnected() and tentativas < 15:
         time.sleep(1)
@@ -41,6 +42,29 @@ def conectar_wifi(ssid, password):
     
     return sta_if.isconnected()
 
+# --- SERVIDOR DNS FALSO (Para Captive Portal) ---
+def servidor_dns_falso():
+    """ Responde a qualquer requisição DNS com o IP do ESP32 (192.168.4.1) """
+    udps = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    udps.setblocking(False)
+    # Vincula à porta padrão de DNS (53) em todas as interfaces
+    udps.bind(('0.0.0.0', 53))
+    
+    print("Servidor DNS Falso iniciado (Porta 53)...")
+    
+    while True:
+        try:
+            data, addr = udps.recvfrom(1024)
+            # Cria a resposta DNS apontando para 192.168.4.1
+            packet = data[:2] + b'\x81\x80' + data[4:6] + data[4:6] + b'\x00\x00\x00\x00' + data[12:]
+            packet += b'\xc0\x0c\x00\x01\x00\x01\x00\x00\x00\x3c\x00\x04\xc0\xa8\x04\x01' # IP 192.168.4.1 em Bytes
+            udps.sendto(packet, addr)
+        except OSError:
+            # Evita travar caso não existam pacotes na fila (non-blocking)
+            time.sleep(0.1)
+        except Exception as e:
+            pass
+
 def iniciar_access_point():
     ap_if = network.WLAN(network.AP_IF)
     ap_if.active(True)
@@ -48,14 +72,14 @@ def iniciar_access_point():
     
     print(f"Modo Access Point Ativo!")
     print(f"Conecte na rede: {AP_SSID}")
-    print(f"Acesse no navegador: http://192.168.4.1")
     
-    # Configura e inicia o Servidor Web Socket simples
-    import socket
+    # Inicia o Servidor DNS em uma Thread separada do MicroPython
+    _thread.start_new_thread(servidor_dns_falso, ())
+    
+    # Configura e inicia o Servidor Web
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind(('192.168.4.1', 80))
     s.listen(1)
-    
     
     # Página HTML do formulário
     html = """<!DOCTYPE html>
@@ -76,7 +100,7 @@ def iniciar_access_point():
     </head>
     <body>
         <div class="container">
-            <h2>Configurações de Conexão do ESP32</h2>
+            <h2>Configurações do Genius</h2>
             <form action="/save" method="POST">
                 <label>SSID do Wi-Fi:</label>
                 <input type="text" name="ssid" required>
@@ -98,52 +122,68 @@ def iniciar_access_point():
     """
 
     while True:
-        conn, addr = s.accept()
-        request = conn.recv(1024).decode('utf-8')
-        
-        # Se for a requisição para salvar os dados (POST)
-        if "POST /save" in request:
-            # Separa o corpo da requisição (onde ficam os dados do formulário)
+        try:
+            conn, addr = s.accept()
+            conn.settimeout(2.0) # Evita que conexões presas travem o ESP32
+            request = conn.recv(1024).decode('utf-8')
+            
+            if not request:
+                conn.close()
+                continue
+
+            # Se for a requisição para salvar os dados (POST)
+            if "POST /save" in request:
+                try:
+                    body = request.split("\r\n\r\n")[1]
+                except IndexError:
+                    body = request.split("\n\n")[1]
+                
+                dados = {}
+                pares = body.split("&")
+                for par in pares:
+                    try:
+                        chave, valor = par.split("=")
+                        valor = valor.replace("%20", " ").replace("%3A", ":").replace("%2F", "/")
+                        dados[chave] = valor
+                    except ValueError:
+                        pass
+                
+                config_data = {
+                    "wifi_ssid": dados.get("ssid"),
+                    "wifi_pass": dados.get("password"),
+                    "broker_ip": dados.get("broker"),
+                    "broker_port": int(dados.get("port", 1883))
+                }
+                
+                salvar_configuracao(config_data)
+                
+                resposta = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n"
+                resposta += "<h3>Configuracoes salvas com sucesso! O ESP32 esta reiniciando...</h3>"
+                conn.send(resposta)
+                conn.close()
+                
+                print("Configurações salvas. Reiniciando em 2 segundos...")
+                time.sleep(2)
+                machine.reset()
+                
+            # Se o dispositivo pedir explicitamente a raiz ou a página de configuração
+            elif "GET / " in request or "GET /index.html" in request:
+                resposta = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + html
+                conn.send(resposta)
+                conn.close()
+                
+            # CAPTIVE PORTAL FORÇADO: Se for qualquer outra requisição (ex: /generate_204), 
+            # responde com um redirecionamento 302 para a raiz do ESP32.
+            else:
+                resposta = "HTTP/1.1 302 Found\r\nLocation: http://192.168.4.1/\r\n\r\n"
+                conn.send(resposta)
+                conn.close()
+                
+        except Exception as e:
             try:
-                body = request.split("\r\n\r\n")[1]
-            except IndexError:
-                body = request.split("\n\n")[1]
-            
-            # Parse manual dos dados enviados pelo formulário (URL-encoded)
-            dados = {}
-            pares = body.split("&")
-            for par in pares:
-                chave, valor = par.split("=")
-                # Decodifica caracteres especiais simples da URL (ex: %20 para espaço)
-                valor = valor.replace("%20", " ").replace("%3A", ":").replace("%2F", "/")
-                dados[chave] = valor
-            
-            # Monta a estrutura para o JSON
-            config_data = {
-                "wifi_ssid": dados.get("ssid"),
-                "wifi_pass": dados.get("password"),
-                "broker_ip": dados.get("broker"),
-                "broker_port": int(dados.get("port", 1883))
-            }
-            
-            # Salva o arquivo na Flash do ESP32
-            salvar_configuracao(config_data)
-            
-            # Resposta visual para o navegador antes de cair
-            resposta = "HTTP/1.1 200 OK\r\nContent-Type: text/html; charset=utf-8\r\n\r\n"
-            resposta += "<h3>Configuracoes salvas com sucesso! O ESP32 esta reiniciando...</h3>"
-            conn.send(resposta)
-            conn.close()
-            
-            print("Configurações salvas. Reiniciando em 2 segundos...")
-            time.sleep(2)
-            machine.reset() # Dá o Reboot automático
-            
-        else:
-            # Se for apenas acessando a página, envia o formulário HTML
-            resposta = "HTTP/1.1 200 OK\r\nContent-Type: text/html\r\n\r\n" + html
-            conn.send(resposta)
-            conn.close()
+                conn.close()
+            except:
+                pass
 
 # --- FLUXO PRINCIPAL DE BOOT ---
 
@@ -153,19 +193,17 @@ if not arquivo_existe(CONFIG_FILE):
 else:
     try:
         config = ler_configuracao()
-        # Tenta conectar usando os dados do JSON
         conectado = conectar_wifi(config["wifi_ssid"], config["wifi_pass"])
         
         if conectado:
             print("Wi-Fi conectado com sucesso!")
             print("Dados da rede:", network.WLAN(network.STA_IF).ifconfig())
             print("Pronto para iniciar o jogo...")
-            # O boot.py termina aqui com sucesso, o MicroPython vai chamar o main.py
         else:
             print("Falha ao conectar no Wi-Fi com as configurações salvas.")
-            # Se falhar o Wi-Fi (ex: roteador desligado ou senha mudou), entra em modo AP como Fallback
             iniciar_access_point()
             
     except Exception as e:
         print("Erro ao ler JSON ou corrompido:", e)
         iniciar_access_point()
+
