@@ -76,7 +76,7 @@ def iniciar_access_point():
     </head>
     <body>
         <div class="container">
-            <h2>Configurações do Genius</h2>
+            <h2>Configurações de Conexão do ESP32</h2>
             <form action="/save" method="POST">
                 <label>SSID do Wi-Fi:</label>
                 <input type="text" name="ssid" required>

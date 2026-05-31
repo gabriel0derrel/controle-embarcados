@@ -1,7 +1,10 @@
 FROM eclipse-mosquitto:2.0.18
 
-# Copia o arquivo de configuração personalizado para o container
-COPY config/mosquitto.conf /broker-mqtt/config/mosquitto.conf
+# O primeiro caminho 'config/mosquitto.conf' procura a partir da pasta 'broker-mqtt' do seu PC.
+# O segundo caminho '/mosquitto/config/mosquitto.conf' é o local de destino correto DENTRO do container.
+COPY config/mosquitto.conf /mosquitto/config/mosquitto.conf
 
-# Expõe as portas: 1883 (ESP32) e 9001 (WebSockets/Frontend)
+# Garante que o Mosquitto vai rodar apontando para o arquivo no local correto do container
+CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]
+
 EXPOSE 1883 9001

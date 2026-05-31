@@ -1,10 +1,28 @@
-# docker-lab
+# controle-embarcados
+
+# Conectar embarcado na rede Wi-Fi pela primeira vez
+## 1 Passo
+Se conectar na rede ESP32_Setup com a senha 12345678
+
+## 2 Passo
+Acessar 192.168.4.1
+
+## 3 Passo
+Incicar o SSID(Nome) e Senha da rede a ser conectada, e indicar o IP e a Porta do Broker
+
+## 4 Passo
+Salvar e esperar o reboot
 
 # Docker Compose
-## Subir os conteiners
+## Construir os conteiners
 ```bash
 sudo -E docker compose up --build -d
 ```
+## Subir conteiners existentes
+```bash
+sudo -E docker compose up -d
+```
+
 ## Listar conteiners
 ```bash
 sudo docker-compose ps
@@ -39,11 +57,10 @@ Use o e-mail e senha do arquivo .env para fazer login. Você pode adicionar um n
 ## API (via Nginx): 
 
 http://localhost:8080/api/
-
-Você deve ver amensagem "Hello World!" do NestJS.
+.
 
 ## Frontend (direto):
 
 http://localhost:5173 
 
-Para interagir diretamente com o servidor de desenvolvimento do Vite (com hot-reload).
+Para interagir diretamente com o servidor de desenvolvimento do Vite.

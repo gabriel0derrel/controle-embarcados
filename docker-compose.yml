@@ -42,10 +42,12 @@ services:
       - /usr/src/app/node_modules # Impede que o node_modules local sobrescreva o do container
     depends_on:
       - postgres
+      - mosquitto # <--- Adicionado para garantir que o broker suba antes
     networks:
       - app_network
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
+      MQTT_URL: ${MQTT_URL} # <--- URL usando o nome do serviço no Docker
 
   # Serviço de Frontend
   frontend:
@@ -58,7 +60,6 @@ services:
       - /usr/src/app/node_modules
     depends_on:
       - backend
-      - mosquitto
     networks:
       - app_network
 
