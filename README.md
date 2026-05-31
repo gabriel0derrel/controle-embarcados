@@ -8,7 +8,7 @@ Se conectar na rede ESP32_Setup com a senha 12345678
 Acessar 192.168.4.1
 
 ## 3 Passo
-Incicar o SSID(Nome) e Senha da rede a ser conectada, e indicar o IP e a Porta do Broker
+Indicar o SSID(Nome) e Senha da rede a ser conectada, e indicar o IP e a Porta do Broker
 
 ## 4 Passo
 Salvar e esperar o reboot
