@@ -1,4 +1,4 @@
-# Backend - Genius IoT
+# Backend
 
 API NestJS para controle do jogo Genius via MQTT e persistência de dados.
 
@@ -6,52 +6,43 @@ API NestJS para controle do jogo Genius via MQTT e persistência de dados.
 
 ```
 src/
-├── app.module.ts         # Módulo raiz
-├── app.controller.ts     # Controller padrão
-├── app.service.ts        # Service padrão
+├── app.module.ts
+├── app.controller.ts
+├── app.service.ts
 ├── mqtt.controller.ts    # Escuta tópicos MQTT do ESP32
-├── jogo/                 # Módulo do jogo
+├── jogo/
 │   ├── jogo.module.ts
-│   ├── jogo.controller.ts  # Endpoints REST
-│   ├── jogo.service.ts     # Publica mensagens MQTT
-│   └── jogo.gateway.ts     # WebSocket para tempo real
-└── ranking/              # Módulo do ranking (placeholder)
+│   ├── jogo.controller.ts
+│   ├── jogo.service.ts
+│   └── jogo.gateway.ts   # WebSocket (Socket.IO)
+└── ranking/
     ├── ranking.module.ts
     ├── ranking.controller.ts
     └── ranking.service.ts
 ```
 
-## Endpoints
+## Comandos
 
-### Jogo (`/jogo`)
+```bash
+# Desenvolvimento
+npm run start:dev
 
-| Método | Rota | Body | Descrição |
-|--------|------|------|-----------|
-| POST | `/jogo/led` | `{ "cor": "verde" }` | Envia cor pressionada |
-| POST | `/jogo/iniciar` | - | Inicia o jogo |
-| POST | `/jogo/reiniciar` | - | Reinicia o jogo |
-| POST | `/jogo/confirmar` | - | Confirma sequência |
+# Build
+npm run build
 
-### Ranking (`/ranking`)
+# Produção
+npm run start:prod
 
-| Método | Rota | Body | Descrição |
-|--------|------|------|-----------|
-| POST | `/ranking` | `{ "apelido": "AAA", "fase": 5 }` | Salva pontuação |
-| GET | `/ranking` | - | Lista top 10 |
+# Testes
+npm run test
+```
 
-### WebSocket
+## Variáveis de Ambiente
 
-Conexão via Socket.IO no path `/socket.io`.
-
-**Evento emitido:** `estado` - Estado atual do jogo recebido do ESP32.
-
-```typescript
-interface EstadoJogo {
-  tela: 'inicio' | 'piscando' | 'aguardando' | 'certo' | 'errado';
-  fase: number;
-  seq_len: number;
-  entrada: string[];
-}
+```env
+DATABASE_URL=postgresql://postgres:postgres@postgres:5432/app-database
+MQTT_URL=mqtt://mosquitto:1883
+PORT=3000
 ```
 
 ## Tarefas Pendentes
@@ -63,7 +54,7 @@ npm install prisma @prisma/client
 npx prisma init
 ```
 
-Criar `prisma/schema.prisma`:
+Schema sugerido:
 
 ```prisma
 generator client {
@@ -80,7 +71,6 @@ model Partida {
   apelido   String   @db.VarChar(3)
   fase      Int
   createdAt DateTime @default(now())
-
   @@index([fase])
 }
 
@@ -157,29 +147,4 @@ export class DeviceService {
     return this.prisma.device.create({ data });
   }
 }
-```
-
-## Comandos
-
-```bash
-# Desenvolvimento
-npm run start:dev
-
-# Build
-npm run build
-
-# Produção
-npm run start:prod
-
-# Testes
-npm run test
-npm run test:e2e
-```
-
-## Variáveis de Ambiente
-
-```env
-DATABASE_URL=postgresql://postgres:postgres@postgres:5432/app-database
-MQTT_URL=mqtt://mosquitto:1883
-PORT=3000
 ```
