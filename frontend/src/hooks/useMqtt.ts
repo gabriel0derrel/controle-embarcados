@@ -1,7 +1,13 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import type { EstadoJogo, CorGenius } from '../types/jogo';
 
-export type { EstadoJogo, CorGenius };
+export type CorGenius = 'vermelho' | 'amarelo' | 'verde' | 'azul';
+
+export interface EstadoJogo {
+  tela: 'inicio' | 'piscando' | 'aguardando' | 'certo' | 'errado';
+  fase: number;
+  seq_len: number;
+  entrada: string[];
+}
 
 const API_BASE = '/api';
 

@@ -1,5 +1,5 @@
 import { useState, useCallback } from 'react';
-import type { CorGenius } from '../types/jogo';
+import type { CorGenius } from '../hooks/useMqtt';
 
 interface GeniusPadProps {
   onColorPress: (cor: CorGenius) => void;

@@ -1,5 +1,5 @@
 import { useMqtt } from '../hooks/useMqtt';
-import type { CorGenius } from '../types/jogo';
+import type { CorGenius } from '../hooks/useMqtt';
 import { GeniusPad } from '../components/GeniusPad';
 
 export function JogoPage() {
