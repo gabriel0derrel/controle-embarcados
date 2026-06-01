@@ -31,7 +31,6 @@ src/
 | POST | `/jogo/iniciar` | - | Inicia o jogo |
 | POST | `/jogo/reiniciar` | - | Reinicia o jogo |
 | POST | `/jogo/confirmar` | - | Confirma sequência |
-| POST | `/jogo/cancelar` | - | Remove última cor |
 
 ### Ranking (`/ranking`)
 

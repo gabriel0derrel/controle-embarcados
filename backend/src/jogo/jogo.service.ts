@@ -21,7 +21,7 @@ export class JogoService {
     });
   }
 
-  enviarJogo(acao: 'iniciar' | 'reiniciar' | 'confirmar' | 'cancelar') {
+  enviarJogo(acao: 'iniciar' | 'reiniciar' | 'confirmar') {
     return this.client.emit('esp32_genius/jogo', { acao });
   }
 }

@@ -28,10 +28,4 @@ export class JogoController {
     this.jogoService.enviarJogo('confirmar');
     return { ok: true };
   }
-
-  @Post('cancelar')
-  cancelar() {
-    this.jogoService.enviarJogo('cancelar');
-    return { ok: true };
-  }
 }

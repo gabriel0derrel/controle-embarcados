@@ -124,7 +124,6 @@ Endpoints para comunicação com o ESP32:
 | POST | `/jogo/iniciar` | Inicia o jogo |
 | POST | `/jogo/reiniciar` | Reinicia o jogo |
 | POST | `/jogo/confirmar` | Confirma sequência do jogador |
-| POST | `/jogo/cancelar` | Remove última cor digitada |
 
 **WebSocket (Socket.IO):**
 - Evento `estado` - Broadcast do estado do jogo para todos os clientes conectados

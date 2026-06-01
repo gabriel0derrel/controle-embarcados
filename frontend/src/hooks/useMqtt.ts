@@ -72,7 +72,7 @@ export function useMqtt() {
     }
   }, []);
 
-  const enviarJogo = useCallback(async (acao: 'iniciar' | 'reiniciar' | 'confirmar' | 'cancelar') => {
+  const enviarJogo = useCallback(async (acao: 'iniciar' | 'reiniciar' | 'confirmar') => {
     try {
       await fetch(`${API_BASE}/jogo/${acao}`, {
         method: 'POST',
