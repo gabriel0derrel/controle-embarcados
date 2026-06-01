@@ -31,20 +31,21 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
               </div>
 
               {/* Grid Genius */}
-              <div
-                className="mx-auto mb-3"
-                style={{
-                  width: '200px',
-                  height: '200px',
-                  display: 'grid',
-                  gridTemplateColumns: '1fr 1fr',
-                  gap: '6px',
-                }}
-              >
-                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-green)', opacity: 0.85 }}></div>
-                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-red)', opacity: 0.85 }}></div>
-                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-yellow)', opacity: 0.85 }}></div>
-                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-blue)', opacity: 0.85 }}></div>
+              <div className="mx-auto mb-3" style={{ width: '200px', height: '200px' }}>
+                <div className="row g-2 h-100">
+                  <div className="col-6">
+                    <div className="bg-success rounded-3 opacity-75 h-100 border border-2 border-dark"></div>
+                  </div>
+                  <div className="col-6">
+                    <div className="bg-danger rounded-3 opacity-75 h-100 border border-2 border-dark"></div>
+                  </div>
+                  <div className="col-6">
+                    <div className="bg-warning rounded-3 opacity-75 h-100 border border-2 border-dark"></div>
+                  </div>
+                  <div className="col-6">
+                    <div className="bg-primary rounded-3 opacity-75 h-100 border border-2 border-dark"></div>
+                  </div>
+                </div>
               </div>
 
               {/* Info */}

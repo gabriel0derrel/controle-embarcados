@@ -1,13 +1,14 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { MqttController } from './mqtt.controller'; // 1. Importe o novo controller
+import { MqttController } from './mqtt.controller';
+import { JogoModule } from './jogo/jogo.module';
 
 @Module({
-  imports: [],
+  imports: [JogoModule],
   controllers: [
     AppController, 
-    MqttController // 2. Adicione ele aqui na lista
+    MqttController
   ],
   providers: [AppService],
 })

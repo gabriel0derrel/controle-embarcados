@@ -7,7 +7,7 @@ import { RankingPage } from '../pages/RankingPage';
 
 function AppLayout() {
   return (
-    <div className="d-flex flex-column min-vh-100 radial-bg">
+    <div className="d-flex flex-column min-vh-100 bg-body-tertiary">
       <Navbar />
       <main className="flex-grow-1 d-flex align-items-start justify-content-center pt-3 pb-5 mt-5">
         <Outlet />
