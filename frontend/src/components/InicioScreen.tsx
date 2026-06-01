@@ -7,7 +7,7 @@ interface InicioScreenProps {
 export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
   return (
     <div className="container py-4">
-      <div className="row align-items-center g-5 mt-2">
+      <div className="row align-items-center g-4 g-lg-5 mt-2">
 
         {/* Coluna Esquerda - Texto */}
         <div className="col-12 col-lg-6 text-center text-lg-start">
@@ -21,9 +21,9 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
         </div>
 
         {/* Coluna Direita - Card */}
-        <div className="col-12 col-md-8 col-lg-5 mx-auto ms-lg-auto">
+        <div className="col-12 col-sm-10 col-md-8 col-lg-5 mx-auto ms-lg-auto">
           <div className="card border-0 shadow-sm rounded-4">
-            <div className="card-body p-4">
+            <div className="card-body p-3 p-md-4">
               {/* Status */}
               <div className="d-flex align-items-center gap-2 mb-3">
                 <span className="rounded-circle bg-success pulse-green" style={{ width: '8px', height: '8px' }}></span>
@@ -31,7 +31,7 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
               </div>
 
               {/* Grid Genius */}
-              <div className="mx-auto mb-3" style={{ width: '200px', height: '200px' }}>
+              <div className="mx-auto mb-3" style={{ maxWidth: '220px', aspectRatio: '1' }}>
                 <div className="row g-2 h-100">
                   <div className="col-6">
                     <div className="bg-success rounded-3 opacity-75 h-100 border border-2 border-dark"></div>

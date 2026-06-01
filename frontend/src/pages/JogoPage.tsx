@@ -24,9 +24,9 @@ export function JogoPage() {
   return (
     <div className="container py-4">
       <div className="row justify-content-center">
-        <div className="col-12 col-md-8 col-lg-6">
+        <div className="col-12 col-sm-10 col-md-8 col-lg-6">
           <div className="card border-0 shadow-sm rounded-4">
-            <div className="card-body p-4">
+            <div className="card-body p-3 p-md-4">
 
               {/* Status */}
               <div className="d-flex justify-content-between align-items-center mb-4">
