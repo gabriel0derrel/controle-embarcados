@@ -11,11 +11,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
       <div className="container-fluid px-2 px-md-3">
         {/* Logo / Marca */}
         <a 
-          className="navbar-brand fw-bold text-primary" 
+          className="navbar-brand fw-bold d-flex align-items-center gap-2 text-primary" 
           href="#"
           onClick={(e) => { e.preventDefault(); onNavigate('inicio'); }}
         >
-          Genius IoT
+          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-red)' }}></span>
+          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-blue)' }}></span>
+          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-yellow)' }}></span>
+          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-green)' }}></span>
+          <span className="ms-1">Genius IoT</span>
         </a>
 
         {/* Botão de Toggle (Menu Mobile) */}
