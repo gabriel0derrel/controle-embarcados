@@ -29,18 +29,19 @@ export function JogoPage() {
             <div className="card-body p-3 p-md-4">
 
               {/* Status */}
-              <div className="d-flex justify-content-between align-items-center mb-4">
+              <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="d-flex align-items-center gap-2">
                   <span className={`rounded-circle ${connected ? 'bg-success pulse-green' : 'bg-danger'}`} style={{ width: '8px', height: '8px' }}></span>
                   <small className="text-secondary fw-medium">
                     {connected ? 'MQTT Conectado' : 'Desconectado'}
                   </small>
                 </div>
-                {estado && (
-                  <span className="badge bg-primary-subtle text-primary rounded-pill px-3">
-                    Fase {estado.fase}
-                  </span>
-                )}
+              </div>
+
+              {/* Placar */}
+              <div className="text-center mb-4">
+                <div className="small text-secondary">Fase</div>
+                <div className="display-6 fw-bold text-primary">{estado?.fase ?? '-'}</div>
               </div>
 
               {/* Estado do jogo */}

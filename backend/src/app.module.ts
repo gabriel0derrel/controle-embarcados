@@ -3,9 +3,10 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MqttController } from './mqtt.controller';
 import { JogoModule } from './jogo/jogo.module';
+import { RankingModule } from './ranking/ranking.module';
 
 @Module({
-  imports: [JogoModule],
+  imports: [JogoModule, RankingModule],
   controllers: [
     AppController, 
     MqttController
