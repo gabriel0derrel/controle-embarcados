@@ -1,9 +1,9 @@
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { path: '/', label: 'Início', icon: 'bi-house' },
-  { path: '/jogo', label: 'Jogo', icon: 'bi-controller' },
-  { path: '/ranking', label: 'Ranking', icon: 'bi-trophy' },
+  { path: '/', label: 'Início' },
+  { path: '/jogo', label: 'Jogo' },
+  { path: '/ranking', label: 'Ranking' },
 ];
 
 export function Navbar() {
@@ -31,19 +31,18 @@ export function Navbar() {
 
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav ms-auto gap-1">
-            {navItems.map(({ path, label, icon }) => (
+            {navItems.map(({ path, label }) => (
               <li className="nav-item" key={path}>
                 <NavLink
                   to={path}
                   end={path === '/'}
                   className={({ isActive }) =>
-                    `nav-link d-flex align-items-center gap-1 rounded-pill px-3 ${
+                    `nav-link rounded-pill px-3 ${
                       isActive ? 'active fw-semibold text-dark bg-light' : 'text-secondary'
                     }`
                   }
                 >
-                  <i className={`bi ${icon}`}></i>
-                  <span>{label}</span>
+                  {label}
                 </NavLink>
               </li>
             ))}

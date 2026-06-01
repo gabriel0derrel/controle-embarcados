@@ -11,8 +11,13 @@ export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
 
         {/* Coluna Esquerda - Texto */}
         <div className="col-12 col-lg-6 text-center text-lg-start">
-          <h1 className="display-2 genius-title mb-3">
-            Genius
+          <h1 className="display-2 mb-3" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 300 }}>
+            <span style={{ color: 'var(--genius-green)' }}>G</span>
+            <span style={{ color: 'var(--genius-red)' }}>e</span>
+            <span style={{ color: 'var(--genius-yellow)' }}>n</span>
+            <span style={{ color: 'var(--genius-blue)' }}>i</span>
+            <span style={{ color: 'var(--genius-green)' }}>u</span>
+            <span style={{ color: 'var(--genius-red)' }}>s</span>
           </h1>
 
           <p className="fs-5 text-secondary mb-4 mx-auto mx-lg-0" style={{ maxWidth: '460px' }}>
