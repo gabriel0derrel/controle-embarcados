@@ -27,7 +27,7 @@ export function JogoPage() {
               {/* Status */}
               <div className="d-flex justify-content-between align-items-center mb-3">
                 <div className="d-flex align-items-center gap-2">
-                  <span className={`rounded-circle ${connected ? 'bg-success pulse-green' : 'bg-danger'}`} style={{ width: '8px', height: '8px' }}></span>
+                  <span className={`rounded-circle ${connected ? 'bg-success' : 'bg-danger'}`} style={{ width: '8px', height: '8px' }}></span>
                   <small className="text-secondary fw-medium">
                     {connected ? 'MQTT Conectado' : 'Desconectado'}
                   </small>

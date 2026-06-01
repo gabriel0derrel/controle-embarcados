@@ -12,10 +12,10 @@ export function Navbar() {
       <div className="container">
         <NavLink to="/" className="navbar-brand d-flex align-items-center gap-2">
           <div className="d-flex gap-1">
-            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: 'var(--genius-green)' }}></span>
-            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: 'var(--genius-red)' }}></span>
-            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: 'var(--genius-yellow)' }}></span>
-            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: 'var(--genius-blue)' }}></span>
+            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#28a745' }}></span>
+            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#dc3545' }}></span>
+            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#ffc107' }}></span>
+            <span className="rounded-circle" style={{ width: '10px', height: '10px', backgroundColor: '#007bff' }}></span>
           </div>
           <span className="text-dark" style={{ fontFamily: "'Poppins', sans-serif", fontWeight: 300, fontSize: '1.1rem' }}>Genius</span>
         </NavLink>
