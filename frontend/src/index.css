@@ -7,21 +7,5 @@
   --genius-yellow: #ffc107;
   --genius-yellow-lit: #ffdf6d;
   --genius-blue: #007bff;
-  --genius-blue-lit: #4ba3ff;
-}
-
-/* Título Genius colorido */
-.genius-title {
-  font-family: 'Poppins', sans-serif;
-  font-weight: 100;
-  background: linear-gradient(135deg,
-      var(--genius-green) 12%,
-      var(--genius-yellow) 12%,
-      var(--genius-yellow) 23%,
-      var(--genius-red) 23%,
-      var(--genius-red) 34%,
-      var(--genius-blue) 34%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  --genius-blue-lit: #66b3ff;
 }

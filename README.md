@@ -17,7 +17,7 @@ O projeto permite controlar remotamente um dispositivo ESP32 que executa o jogo 
 
 ```bash
 # Clonar o repositório
-git clone <url-do-repositorio>
+git clone https://github.com/gabriel0derrel/controle-embarcados
 cd controle-embarcados
 
 # Criar arquivo de ambiente
