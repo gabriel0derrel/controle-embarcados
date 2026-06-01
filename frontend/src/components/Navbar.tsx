@@ -70,7 +70,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
           {/* Status de Conexão à Direita */}
           <div className="d-flex align-items-center gap-3">
             <span className="badge bg-success d-flex align-items-center gap-1">
-              <span className="material-symbols-outlined fs-6" style={{ fontVariationSettings: "'FILL' 1" }}>wifi</span>
+              <i className="bi bi-wifi fs-6"></i>
               ESP32 Conectado
             </span>
           </div>
