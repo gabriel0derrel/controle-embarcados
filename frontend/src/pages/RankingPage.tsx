@@ -95,7 +95,6 @@ export function RankingPage() {
                         </>
                       ) : (
                         <>
-                          <i className="bi bi-trophy"></i>
                           Salvar e Ver Ranking
                         </>
                       )}
@@ -118,7 +117,6 @@ export function RankingPage() {
               {ranking.length > 0 && (
                 <div className="mb-4">
                   <div className="d-flex align-items-center gap-2 mb-3">
-                    <i className="bi bi-stars text-warning fs-4"></i>
                     <h2 className="fs-5 mb-0 fw-bold text-dark">Ranking Global</h2>
                   </div>
                   <div className="table-responsive border rounded-3">
@@ -152,8 +150,8 @@ export function RankingPage() {
                 </div>
               )}
 
-              {/* Voltar */}
-              <div className="mt-auto" style={{ marginBottom: '-1.5rem' }}>
+              {/* Voltar - colado no final */}
+              <div className="mt-auto pt-4">
                 <button
                   className="btn btn-link text-decoration-none fw-semibold d-flex align-items-center justify-content-center gap-2 mx-auto"
                   onClick={() => navigate('/')}

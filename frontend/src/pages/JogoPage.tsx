@@ -17,10 +17,6 @@ export function JogoPage() {
     enviarJogo('reiniciar');
   };
 
-  const handleConfirmar = () => {
-    enviarJogo('confirmar');
-  };
-
   return (
     <div className="container py-4">
       <div className="row justify-content-center">
@@ -67,7 +63,6 @@ export function JogoPage() {
               <GeniusPad
                 onColorPress={handleColorPress}
                 disabled={!connected || estado?.tela !== 'aguardando'}
-                entrada={estado?.entrada}
               />
 
               {/* Botões de controle */}
@@ -82,35 +77,15 @@ export function JogoPage() {
                     Iniciar
                   </button>
                 ) : (
-                  <>
-                    <button
-                      className="btn btn-outline-dark fw-semibold flex-fill d-flex align-items-center justify-content-center gap-2"
-                      onClick={handleReiniciar}
-                    >
-                      <i className="bi bi-arrow-counterclockwise"></i>
-                      Reiniciar
-                    </button>
-                    {estado.tela === 'aguardando' && estado.entrada.length === estado.seq_len && (
-                      <button
-                        className="btn btn-dark fw-semibold flex-fill d-flex align-items-center justify-content-center gap-2"
-                        onClick={handleConfirmar}
-                      >
-                        <i className="bi bi-check-lg"></i>
-                        Confirmar
-                      </button>
-                    )}
-                  </>
+                  <button
+                    className="btn btn-outline-dark fw-semibold flex-fill d-flex align-items-center justify-content-center gap-2"
+                    onClick={handleReiniciar}
+                  >
+                    <i className="bi bi-arrow-counterclockwise"></i>
+                    Reiniciar
+                  </button>
                 )}
               </div>
-
-              {/* Entrada do jogador */}
-              {estado && estado.tela === 'aguardando' && (
-                <div className="mt-3 text-center">
-                  <small className="text-secondary">
-                    Entrada: {estado.entrada.length} / {estado.seq_len}
-                  </small>
-                </div>
-              )}
 
             </div>
           </div>
