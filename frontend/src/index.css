@@ -1,4 +1,9 @@
-/* Cores customizadas do Genius (Apagado / Aceso / Sombra física) */
+/* Fonte global */
+body {
+  font-family: 'Inter', sans-serif;
+}
+
+/* Cores customizadas do Genius */
 :root {
   --genius-green: #28a745;
   --genius-green-lit: #39d75c;
@@ -17,130 +22,53 @@
   --genius-blue-shadow: #0062cc;
 }
 
-/* Fundo padrão com bolinhas de grade (opcional para estética premium) */
+/* Fundo com grade pontilhada */
 .radial-bg {
   background-color: #f8f9fa;
   background-image: radial-gradient(#dbe4ed 1.5px, transparent 1.5px);
   background-size: 24px 24px;
 }
 
-/* Pad circular do Genius */
-.genius-pad {
-  width: 100%;
-  aspect-ratio: 1;
-  background-color: #edeeef;
-  border-radius: 50%;
-  border: 8px solid #ced4da;
-  padding: 1rem;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+/* Título Genius colorido */
+/* 
+  Ajuste os valores percentuais para controlar o tamanho de cada cor:
+  - Verde:   0% até X1%
+  - Amarelo: X1% até X2%
+  - Vermelho: X2% até X3%
+  - Azul:    X3% até 100%
+  
+  Exemplo: 25%, 25%, 50%, 50%, 75%, 75% = 4 blocos iguais
+*/
+.genius-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 100;
+  background: linear-gradient(135deg,
+      var(--genius-green) 11%,
+      var(--genius-yellow) 17%,
+      var(--genius-yellow) 21%,
+      var(--genius-red) 26%,
+      var(--genius-red) 31%,
+      var(--genius-blue) 36%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
-.genius-btn {
-  border: none;
-  outline: none;
-  cursor: pointer;
-  transition: all 0.1s ease;
-  opacity: 0.85;
-}
-
-.genius-btn:hover {
-  opacity: 0.95;
-  filter: brightness(1.05);
-}
-
-.genius-btn:active {
-  transform: scale(0.96) !important;
-}
-
-/* Formatos de quadrantes e efeitos ativos/acesos dos botões */
-.genius-btn-green {
-  background-color: var(--genius-green);
-  border-top-left-radius: 100% !important;
-  border-top-right-radius: 1.5rem !important;
-  border-bottom-left-radius: 1.5rem !important;
-  border-bottom-right-radius: 0.25rem !important;
-  box-shadow: 0 6px 0 0 var(--genius-green-shadow);
-}
-.genius-btn-green.active, .genius-btn-green:active {
-  background-color: var(--genius-green-lit) !important;
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 15px var(--genius-green-lit));
-  box-shadow: 0 0px 0 0 var(--genius-green-shadow) !important;
-  transform: translateY(6px);
-}
-
-.genius-btn-red {
-  background-color: var(--genius-red);
-  border-top-right-radius: 100% !important;
-  border-top-left-radius: 1.5rem !important;
-  border-bottom-right-radius: 1.5rem !important;
-  border-bottom-left-radius: 0.25rem !important;
-  box-shadow: 0 6px 0 0 var(--genius-red-shadow);
-}
-.genius-btn-red.active, .genius-btn-red:active {
-  background-color: var(--genius-red-lit) !important;
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 15px var(--genius-red-lit));
-  box-shadow: 0 0px 0 0 var(--genius-red-shadow) !important;
-  transform: translateY(6px);
-}
-
-.genius-btn-yellow {
-  background-color: var(--genius-yellow);
-  border-bottom-left-radius: 100% !important;
-  border-bottom-right-radius: 1.5rem !important;
-  border-top-left-radius: 1.5rem !important;
-  border-top-right-radius: 0.25rem !important;
-  box-shadow: 0 6px 0 0 var(--genius-yellow-shadow);
-}
-.genius-btn-yellow.active, .genius-btn-yellow:active {
-  background-color: var(--genius-yellow-lit) !important;
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 15px var(--genius-yellow-lit));
-  box-shadow: 0 0px 0 0 var(--genius-yellow-shadow) !important;
-  transform: translateY(6px);
-}
-
-.genius-btn-blue {
-  background-color: var(--genius-blue);
-  border-bottom-right-radius: 100% !important;
-  border-bottom-left-radius: 1.5rem !important;
-  border-top-right-radius: 1.5rem !important;
-  border-top-left-radius: 0.25rem !important;
-  box-shadow: 0 6px 0 0 var(--genius-blue-shadow);
-}
-.genius-btn-blue.active, .genius-btn-blue:active {
-  background-color: var(--genius-blue-lit) !important;
-  opacity: 1 !important;
-  filter: drop-shadow(0 0 15px var(--genius-blue-lit));
-  box-shadow: 0 0px 0 0 var(--genius-blue-shadow) !important;
-  transform: translateY(6px);
-}
-
-/* Animações de pulsação dos LEDs de status */
+/* Animação de pulsação do LED de status */
 .pulse-green {
   animation: pulse-green-anim 1.5s infinite;
 }
+
 @keyframes pulse-green-anim {
-  0% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(40, 167, 69, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(40, 167, 69, 0); }
-}
+  0% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0.7);
+  }
 
-.pulse-yellow {
-  animation: pulse-yellow-anim 1.5s infinite;
-}
-@keyframes pulse-yellow-anim {
-  0% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(255, 193, 7, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(255, 193, 7, 0); }
-}
+  70% {
+    box-shadow: 0 0 0 6px rgba(40, 167, 69, 0);
+  }
 
-.pulse-red {
-  animation: pulse-red-anim 1.5s infinite;
-}
-@keyframes pulse-red-anim {
-  0% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7); }
-  70% { box-shadow: 0 0 0 6px rgba(220, 53, 69, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(220, 53, 69, 0); }
+  100% {
+    box-shadow: 0 0 0 0 rgba(40, 167, 69, 0);
+  }
 }

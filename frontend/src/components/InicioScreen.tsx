@@ -6,89 +6,64 @@ interface InicioScreenProps {
 
 export const InicioScreen: React.FC<InicioScreenProps> = ({ onStartGame }) => {
   return (
-    <div className="container py-3">
-      <div className="row align-items-center justify-content-center g-5 mt-2">
+    <div className="container py-4">
+      <div className="row align-items-center g-5 mt-2">
 
-        {/* Conteúdo Esquerdo / Preview do Jogo */}
+        {/* Coluna Esquerda - Texto */}
         <div className="col-12 col-lg-6 text-center text-lg-start">
-          <h1 className="display-4 fw-bold mb-3 text-dark">
-            Desafie sua Memória
+          <h1 className="display-2 genius-title mb-3">
+            Genius
           </h1>
-          <p className="lead text-secondary mb-4 mx-auto mx-lg-0" style={{ maxWidth: '500px' }}>
-            Conecte-se a dispositivos físicos reais ou use nosso simulador para testar seus reflexos no clássico jogo Genius, agora potencializado com a tecnologia IoT.
-          </p>
 
-          {/* Grid de Preview dos Botões do Genius */}
-          <div
-            className="position-relative mx-auto ms-lg-0"
-            style={{
-              width: '240px',
-              height: '240px',
-              borderRadius: '16px',
-              backgroundColor: '#edeeef',
-              padding: '12px',
-              boxShadow: '0 8px 30px rgba(0, 0, 0, 0.08)',
-              border: '1px solid #dee2e6'
-            }}
-          >
-            <div
-              style={{
-                display: 'grid',
-                gridTemplateColumns: '1fr 1fr',
-                gridTemplateRows: '1fr 1fr',
-                gap: '10px',
-                width: '100%',
-                height: '100%'
-              }}
-            >
-              <div
-                className="bg-success opacity-75"
-                style={{
-                  borderRadius: '8px'
-                }}
-              ></div>
-              <div
-                className="bg-danger opacity-75"
-                style={{
-                  borderRadius: '8px'
-                }}
-              ></div>
-              <div
-                className="bg-warning opacity-75"
-                style={{
-                  borderRadius: '8px'
-                }}
-              ></div>
-              <div
-                className="bg-primary opacity-75"
-                style={{
-                  borderRadius: '8px'
-                }}
-              ></div>
-            </div>
-          </div>
+          <p className="fs-5 text-secondary mb-4 mx-auto mx-lg-0" style={{ maxWidth: '460px' }}>
+            Controle dispositivos embarcados remotamente. Jogue contra o hardware físico via MQTT em tempo real.
+          </p>
         </div>
 
-        {/* Conteúdo Direito / Painel de Controle */}
-        <div className="col-12 col-md-8 col-lg-5 col-xl-4">
-          <div className="card shadow-lg border border-light rounded-4 overflow-hidden">
-            <div className="card-body p-4 p-md-5 text-center">
-              <h2 className="h3 fw-bold text-dark mb-4">Pronto para Começar?</h2>
+        {/* Coluna Direita - Card */}
+        <div className="col-12 col-md-8 col-lg-5 mx-auto ms-lg-auto">
+          <div className="card border-0 shadow-sm rounded-4">
+            <div className="card-body p-4">
+              {/* Status */}
+              <div className="d-flex align-items-center gap-2 mb-3">
+                <span className="rounded-circle bg-success pulse-green" style={{ width: '8px', height: '8px' }}></span>
+                <small className="text-secondary fw-medium">Dispositivo Conectado</small>
+              </div>
 
-              <div className="d-grid">
+              {/* Grid Genius */}
+              <div
+                className="mx-auto mb-3"
+                style={{
+                  width: '200px',
+                  height: '200px',
+                  display: 'grid',
+                  gridTemplateColumns: '1fr 1fr',
+                  gap: '6px',
+                }}
+              >
+                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-green)', opacity: 0.85 }}></div>
+                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-red)', opacity: 0.85 }}></div>
+                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-yellow)', opacity: 0.85 }}></div>
+                <div className="rounded-3" style={{ backgroundColor: 'var(--genius-blue)', opacity: 0.85 }}></div>
+              </div>
+
+              {/* Info */}
+              <div className="d-flex justify-content-between align-items-center pt-3 border-top">
+                <div>
+                  <div className="small fw-medium text-dark">ESP32 Genius #1</div>
+                  <div className="small text-secondary">192.168.1.100</div>
+                </div>
+                <span className="badge bg-success-subtle text-success rounded-pill px-3">Online</span>
+              </div>
+
+              {/* Botão */}
+              <div className="d-grid mt-4">
                 <button
                   onClick={onStartGame}
-                  className="btn btn-primary fw-bold d-flex align-items-center justify-content-center gap-2 border-0 shadow-sm"
-                  style={{
-                    backgroundColor: '#007bff',
-                    borderRadius: '4px',
-                    paddingTop: '8px',
-                    paddingBottom: '8px',
-                    fontSize: '0.95rem'
-                  }}
+                  className="btn btn-dark fw-semibold d-flex align-items-center justify-content-center gap-2"
                 >
-                  <i className="bi bi-play-fill fs-5"></i>
-                  INICIAR JOGO
+                  <i className="bi bi-play-fill"></i>
+                  Iniciar Jogo
                 </button>
               </div>
             </div>
