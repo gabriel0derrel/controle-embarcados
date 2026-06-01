@@ -1,37 +1,43 @@
-import { useState } from "react"
-import { Nav } from "./components/Nav"
-import { AppRouter } from "./routers/app.routers"
+import { useState } from 'react';
+import { Navbar } from './components/Navbar';
+import { Footer } from './components/Footer';
+import { InicioScreen } from './components/InicioScreen';
+import './App.css';
 
 function App() {
-  const [collapsed, setCollapsed] = useState(false)
+  const [activeScreen, setActiveScreen] = useState<'inicio' | 'jogo' | 'resultado'>('inicio');
 
   return (
-    <div className="container-fluid px-0 min-vh-100">
-      <div className="row g-0 min-vh-100 flex-column flex-md-row">
-        {!collapsed && (
-          <aside className="col-12 col-md-auto bg-dark text-white p-3">
-            <Nav collapsed={collapsed} onToggle={() => setCollapsed(true)} />
-          </aside>
+    <div className="d-flex flex-column min-vh-100 radial-bg">
+      <Navbar 
+        activeScreen={activeScreen} 
+        onNavigate={setActiveScreen} 
+      />
+
+      {/* Main Content Area */}
+      <main className="flex-grow-1 d-flex align-items-center justify-content-center pt-5 pb-5 mt-5">
+        {activeScreen === 'inicio' && (
+          <InicioScreen />
         )}
 
-        <main className="col bg-light p-3 overflow-auto">
-          {collapsed && (
-            <div className="d-flex justify-content-start mb-3">
-              <button
-                type="button"
-                className="btn btn-dark btn-sm"
-                onClick={() => setCollapsed(false)}
-                aria-label="Expandir navegação"
-              >
-                <i className="bi bi-chevron-right" />
-              </button>
-            </div>
-          )}
-          <AppRouter />
-        </main>
-      </div>
+        {activeScreen === 'jogo' && (
+          <div className="container py-5 text-center card shadow-lg p-5 rounded-4 bg-white" style={{ maxWidth: '480px' }}>
+            <h2 className="text-dark fw-bold mb-3">Tela de Jogo</h2>
+            <p className="text-secondary mb-0">Esta tela será implementada no próximo passo.</p>
+          </div>
+        )}
+
+        {activeScreen === 'resultado' && (
+          <div className="container py-5 text-center card shadow-lg p-5 rounded-4 bg-white" style={{ maxWidth: '480px' }}>
+            <h2 className="text-dark fw-bold mb-3">Tela de Ranking</h2>
+            <p className="text-secondary mb-0">Esta tela será implementada nos passos subsequentes.</p>
+          </div>
+        )}
+      </main>
+
+      <Footer />
     </div>
   );
 }
 
-export default App
+export default App;
