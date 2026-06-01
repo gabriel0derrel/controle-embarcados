@@ -7,19 +7,15 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
   return (
-    <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow-sm border-bottom border-3" style={{ borderColor: 'var(--genius-blue)' }}>
-      <div className="container px-4">
+    <nav className="navbar navbar-expand-md navbar-light bg-white fixed-top shadow-sm border-bottom" style={{ backgroundColor: '#ffffff' }}>
+      <div className="container-fluid px-2 px-md-3">
         {/* Logo / Marca */}
         <a 
-          className="navbar-brand fw-bold d-flex align-items-center gap-2" 
+          className="navbar-brand fw-bold text-primary" 
           href="#"
           onClick={(e) => { e.preventDefault(); onNavigate('inicio'); }}
         >
-          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-red)' }}></span>
-          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-blue)' }}></span>
-          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-yellow)' }}></span>
-          <span className="d-inline-block rounded-circle" style={{ width: '12px', height: '12px', backgroundColor: 'var(--genius-green)' }}></span>
-          <span className="ms-1">Genius IoT</span>
+          Genius IoT
         </a>
 
         {/* Botão de Toggle (Menu Mobile) */}
@@ -37,10 +33,10 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
 
         {/* Links de Navegação */}
         <div className="collapse navbar-collapse" id="navbarNav">
-          <ul className="navbar-nav me-auto mb-2 mb-md-0">
+          <ul className="navbar-nav me-auto mb-2 mb-md-0 ms-4">
             <li className="nav-item">
               <a 
-                className={`nav-link ${activeScreen === 'inicio' ? 'active fw-semibold text-white' : 'text-secondary'}`} 
+                className={`nav-link ${activeScreen === 'inicio' ? 'active fw-bold text-dark' : 'text-secondary'}`} 
                 href="#"
                 onClick={(e) => { e.preventDefault(); onNavigate('inicio'); }}
               >
@@ -49,7 +45,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
             </li>
             <li className="nav-item">
               <a 
-                className={`nav-link ${activeScreen === 'jogo' ? 'active fw-semibold text-white' : 'text-secondary'}`} 
+                className={`nav-link ${activeScreen === 'jogo' ? 'active fw-bold text-dark' : 'text-secondary'}`} 
                 href="#"
                 onClick={(e) => { e.preventDefault(); onNavigate('jogo'); }}
               >
@@ -58,7 +54,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
             </li>
             <li className="nav-item">
               <a 
-                className={`nav-link ${activeScreen === 'resultado' ? 'active fw-semibold text-white' : 'text-secondary'}`} 
+                className={`nav-link ${activeScreen === 'resultado' ? 'active fw-bold text-dark' : 'text-secondary'}`} 
                 href="#"
                 onClick={(e) => { e.preventDefault(); onNavigate('resultado'); }}
               >
@@ -67,12 +63,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
             </li>
           </ul>
 
-          {/* Status de Conexão à Direita */}
+          {/* Perfil do Usuário à Direita */}
           <div className="d-flex align-items-center gap-3">
-            <span className="badge bg-success d-flex align-items-center gap-1">
-              <i className="bi bi-wifi fs-6"></i>
-              ESP32 Conectado
-            </span>
+            <a href="#" className="text-secondary" title="Minha Conta">
+              <i className="bi bi-person-circle fs-4"></i>
+            </a>
           </div>
         </div>
       </div>
