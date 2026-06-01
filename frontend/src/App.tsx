@@ -14,7 +14,7 @@ function App() {
         onNavigate={setActiveScreen} 
       />
 
-      {/* Main Content Area */}
+      {/* Área de Conteúdo Principal */}
       <main className="flex-grow-1 d-flex align-items-center justify-content-center pt-5 pb-5 mt-5">
         {activeScreen === 'inicio' && (
           <InicioScreen />

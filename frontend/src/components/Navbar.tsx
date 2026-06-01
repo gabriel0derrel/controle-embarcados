@@ -9,7 +9,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
   return (
     <nav className="navbar navbar-expand-md navbar-dark bg-dark fixed-top shadow-sm border-bottom border-3" style={{ borderColor: 'var(--genius-blue)' }}>
       <div className="container px-4">
-        {/* Brand */}
+        {/* Logo / Marca */}
         <a 
           className="navbar-brand fw-bold d-flex align-items-center gap-2" 
           href="#"
@@ -22,7 +22,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
           <span className="ms-1">Genius IoT</span>
         </a>
 
-        {/* Toggle Button */}
+        {/* Botão de Toggle (Menu Mobile) */}
         <button 
           className="navbar-toggler" 
           type="button" 
@@ -35,7 +35,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
           <span className="navbar-toggler-icon"></span>
         </button>
 
-        {/* Nav Links */}
+        {/* Links de Navegação */}
         <div className="collapse navbar-collapse" id="navbarNav">
           <ul className="navbar-nav me-auto mb-2 mb-md-0">
             <li className="nav-item">
@@ -67,7 +67,7 @@ export const Navbar: React.FC<NavbarProps> = ({ activeScreen, onNavigate }) => {
             </li>
           </ul>
 
-          {/* Right status */}
+          {/* Status de Conexão à Direita */}
           <div className="d-flex align-items-center gap-3">
             <span className="badge bg-success d-flex align-items-center gap-1">
               <span className="material-symbols-outlined fs-6" style={{ fontVariationSettings: "'FILL' 1" }}>wifi</span>

@@ -5,7 +5,7 @@ export const InicioScreen: React.FC = () => {
     <div className="container py-5">
       <div className="row align-items-center justify-content-center g-5">
         
-        {/* Left Content / Game Preview */}
+        {/* Conteúdo Esquerdo / Preview do Jogo */}
         <div className="col-12 col-lg-6 text-center text-lg-start">
           <h1 className="display-4 fw-bold mb-3 text-dark">
             Controle Remoto Genius
@@ -14,7 +14,7 @@ export const InicioScreen: React.FC = () => {
             Dispositivo Pré-estabelecido: <strong>ESP32 Genius IoT</strong>
           </p>
           
-          {/* Genius Buttons Preview Grid */}
+          {/* Grid de Preview dos Botões do Genius */}
           <div 
             className="position-relative mx-auto ms-lg-0" 
             style={{ 
@@ -77,7 +77,7 @@ export const InicioScreen: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Content / Controller Card */}
+        {/* Conteúdo Direito / Painel de Controle */}
         <div className="col-12 col-md-8 col-lg-5 col-xl-4">
           <div className="card shadow-lg border border-light rounded-4 overflow-hidden">
             <div className="card-body p-4 p-md-5 text-center">
