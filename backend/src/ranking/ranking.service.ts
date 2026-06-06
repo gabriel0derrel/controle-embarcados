@@ -17,7 +17,7 @@ export class RankingService implements OnModuleDestroy {
     const faseNum = Number(fase);
     if (!Number.isFinite(faseNum)) throw new BadRequestException('fase inválida');
 
-    const apelidoClean = apelido.toUpperCase().slice(0, 3);
+    const apelidoClean = apelido.toUpperCase().slice(0, 20);
 
     const created = await this.prisma.ranking.create({
       data: {
