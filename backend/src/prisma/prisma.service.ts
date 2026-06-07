@@ -10,7 +10,7 @@ type PgPool = {
 };
 
 const { Pool } = require('pg') as {
-  Pool: new (config: { connectionString: string }) => PgPool;
+  Pool: new (config: { connectionString: string; options?: string }) => PgPool;
 };
 
 type PartidaRecord = {
@@ -71,6 +71,7 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
 
     this.pool = new Pool({
       connectionString: process.env.DATABASE_URL,
+      options: `-c timezone=America/Sao_Paulo`,
     });
   }
 
