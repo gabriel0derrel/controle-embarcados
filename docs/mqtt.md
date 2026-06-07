@@ -7,6 +7,7 @@
 | `esp32_genius/led` | Frontend → ESP32 | Cor pressionada pelo jogador |
 | `esp32_genius/jogo` | Frontend → ESP32 | Comandos de controle |
 | `esp32_genius/estado` | ESP32 → Frontend | Estado atual do jogo |
+| `esp32_genius/status` | ESP32 → Frontend | Presença do embarcado (`online` / `offline`) |
 
 ---
 
@@ -77,6 +78,21 @@
 | `fase` | number | Número da rodada atual |
 | `seq_len` | number | Tamanho da sequência atual |
 | `entrada` | string[] | Cores digitadas pelo jogador nesta rodada |
+
+---
+
+## esp32_genius/status
+
+**Publicado por:** ESP32
+
+**Payload:**
+```json
+{
+  "online": true
+}
+```
+
+O backend usa esse tópico para atualizar o indicador de presença do embarcado no frontend. O valor é enviado assim que o ESP32 conecta ao broker.
 
 ---
 

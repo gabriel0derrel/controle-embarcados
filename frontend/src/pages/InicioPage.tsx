@@ -1,7 +1,21 @@
 import { useNavigate } from 'react-router-dom';
+import { useMqtt } from '../hooks/useMqtt';
 
 export function InicioPage() {
   const navigate = useNavigate();
+  const { connected, backendConnected } = useMqtt();
+
+  const statusLabel = connected
+    ? 'Dispositivo Conectado'
+    : backendConnected
+      ? 'Aguardando embarcado'
+      : 'Conectando...';
+
+  const statusBadge = connected
+    ? 'Online'
+    : backendConnected
+      ? 'Offline'
+      : 'N/A';
 
   return (
     <div className="container py-4">
@@ -29,8 +43,8 @@ export function InicioPage() {
             <div className="card-body p-3 p-md-4">
               {/* Status */}
               <div className="d-flex align-items-center gap-2 mb-3">
-                <span className="rounded-circle bg-success" style={{ width: '8px', height: '8px' }}></span>
-                <small className="text-secondary fw-medium">Dispositivo Conectado</small>
+                <span className={`rounded-circle ${connected ? 'bg-success' : backendConnected ? 'bg-warning' : 'bg-secondary'}`} style={{ width: '8px', height: '8px' }}></span>
+                <small className="text-secondary fw-medium">{statusLabel}</small>
               </div>
 
               {/* Grid Genius */}
@@ -55,9 +69,9 @@ export function InicioPage() {
               <div className="d-flex justify-content-between align-items-center pt-3 border-top">
                 <div>
                   <div className="small fw-medium text-dark">ESP32 Genius #1</div>
-                  <div className="small text-secondary">192.168.1.100</div>
+                  <div className="small text-secondary">{backendConnected ? 'Broker disponível' : 'Aguardando backend'}</div>
                 </div>
-                <span className="badge bg-success-subtle text-success rounded-pill px-3">Online</span>
+                <span className={`badge rounded-pill px-3 ${connected ? 'bg-success-subtle text-success' : backendConnected ? 'bg-warning-subtle text-warning' : 'bg-secondary-subtle text-secondary'}`}>{statusBadge}</span>
               </div>
 
               {/* Botão */}

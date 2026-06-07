@@ -1,0 +1,23 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Partida {
+  id        Int      @id @default(autoincrement())
+  apelido   String   @db.VarChar(20)
+  fase      Int
+  createdAt DateTime @default(now())
+  @@index([fase])
+}
+
+model Device {
+  id        Int      @id @default(autoincrement())
+  nome      String
+  ip        String
+  ativo     Boolean  @default(true)
+  createdAt DateTime @default(now())
+}

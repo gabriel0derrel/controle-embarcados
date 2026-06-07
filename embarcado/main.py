@@ -67,6 +67,7 @@ CLIENT_ID     = 'esp32_genius'
 TOPICO_LED    = b'esp32_genius/led'
 TOPICO_JOGO   = b'esp32_genius/jogo'
 TOPICO_ESTADO = b'esp32_genius/estado'
+TOPICO_STATUS  = b'esp32_genius/status'
 
 # -------------------------------------------------------------------
 # ESTADO DO JOGO
@@ -103,6 +104,26 @@ def pub_estado():
         'entrada': estado['entrada'],
     })
     client.publish(TOPICO_ESTADO, payload.encode())
+
+def pub_status(online):
+    # Publica a presença do embarcado para o backend e o frontend.
+    payload = json.dumps({'online': bool(online)})
+    client.publish(TOPICO_STATUS, payload.encode())
+
+def desconectar_mqtt():
+    global client
+    if client:
+        try:
+            pub_status(False)
+        except Exception:
+            pass
+
+        try:
+            client.disconnect()
+        except Exception:
+            pass
+
+        client = None
 
 def piscar_sequencia():
     # Acende e apaga cada LED da sequência atual em ordem, com pausas entre eles.
@@ -294,6 +315,7 @@ def conectar_mqtt():
         client.subscribe(TOPICO_JOGO)
         print('Inscrito no tópico:', TOPICO_LED.decode('utf-8'))
         print('Inscrito no tópico:', TOPICO_JOGO.decode('utf-8'))
+        pub_status(True)
         pub_estado()
         return True
     except Exception as e:
@@ -368,14 +390,15 @@ while True:
             time.sleep(0.05)
         else:
             print("WiFi desconectado. Tentando reconectar...")
-            client = None
+            desconectar_mqtt()
             wifi.connect(WIFI_SSID, WIFI_PASS)
             time.sleep(5)
 
     except OSError as e:
         print('Erro de socket MQTT (conexão caiu):', e)
-        client = None
+        desconectar_mqtt()
         time.sleep(2)
     except Exception as e:
         print('Erro inesperado no loop:', e)
+        desconectar_mqtt()
         time.sleep(2)
