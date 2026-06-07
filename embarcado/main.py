@@ -16,6 +16,9 @@ try:
     WIFI_PASS   = config.get("wifi_pass")
     MQTT_BROKER = config.get("broker_ip")
     MQTT_PORT   = config.get("broker_port")
+    NOME_EMBARCADO   = "esp32_genius"
+    MARCA_EMBARCADO  = "Espressif"
+    MODELO_EMBARCADO = "ESP32"
 
     print("Configurações carregadas com sucesso!")
 except Exception as e:
@@ -75,6 +78,7 @@ CLIENT_ID     = 'esp32_genius'
 TOPICO_LED    = b'esp32_genius/led'
 TOPICO_JOGO   = b'esp32_genius/jogo'
 TOPICO_ESTADO = b'esp32_genius/estado'
+TOPICO_STATUS = b'esp32_genius/status'
 
 # -------------------------------------------------------------------
 # ESTADO DO JOGO
@@ -116,6 +120,17 @@ def pub_estado():
         'entrada': estado['entrada'],
     })
     client.publish(TOPICO_ESTADO, payload.encode())
+
+def pub_dados_conexao():
+    """Publica os dados do embarcado quando ele se conecta ao broker MQTT."""
+    payload = json.dumps({
+        'online': True,
+        'nome':   NOME_EMBARCADO,
+        'marca':  MARCA_EMBARCADO,
+        'modelo': MODELO_EMBARCADO,
+        'ip':     wifi.ifconfig()[0],
+    })
+    client.publish(TOPICO_STATUS, payload.encode())
 
 def piscar_sequencia():
     """Acende e apaga cada LED da sequência atual em ordem, com pausas entre eles."""
@@ -306,6 +321,7 @@ def conectar_mqtt():
         client.subscribe(TOPICO_JOGO)
         print('Inscrito no tópico:', TOPICO_LED.decode('utf-8'))
         print('Inscrito no tópico:', TOPICO_JOGO.decode('utf-8'))
+        pub_dados_conexao()
         pub_estado()
         return True
     except Exception as e:
@@ -413,3 +429,4 @@ while True:
     except Exception as e:
         print('Erro inesperado no loop:', e)
         time.sleep(2)
+

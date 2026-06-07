@@ -20,9 +20,24 @@ type PartidaRecord = {
   createdAt: Date;
 };
 
+type EmbarcadoRecord = {
+  nome: string;
+  marca: string;
+  modelo: string;
+  ip: string;
+  dataConexao: Date;
+};
+
 export type PartidaCreateInput = {
   apelido: string;
   fase: number;
+};
+
+export type EmbarcadoUpsertInput = {
+  nome: string;
+  marca: string;
+  modelo: string;
+  ip: string;
 };
 
 export type PartidaSelect = {
@@ -99,6 +114,25 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     },
   };
 
+  embarcado = {
+    upsert: async ({ data }: { data: EmbarcadoUpsertInput }) => {
+      const result = await this.pool.query<EmbarcadoRecord>(
+        `
+          INSERT INTO embarcados (nome, marca, modelo, ip)
+          VALUES ($1, $2, $3, $4)
+          ON CONFLICT (nome, marca, modelo)
+          DO UPDATE SET
+            ip = EXCLUDED.ip,
+            data_conexao = NOW()
+          RETURNING nome, marca, modelo, ip, data_conexao AS "dataConexao"
+        `,
+        [data.nome, data.marca, data.modelo, data.ip],
+      );
+
+      return result.rows[0];
+    },
+  };
+
   async onModuleInit() {
     await this.$connect();
     await this.garantirSchema();
@@ -134,6 +168,17 @@ export class PrismaService implements OnModuleInit, OnModuleDestroy {
     await this.pool.query(`
       CREATE INDEX IF NOT EXISTS partida_fase_idx
       ON partida (fase)
+    `);
+
+    await this.pool.query(`
+      CREATE TABLE IF NOT EXISTS embarcados (
+        nome VARCHAR(100) NOT NULL,
+        marca VARCHAR(100) NOT NULL,
+        modelo VARCHAR(100) NOT NULL,
+        ip VARCHAR(45) NOT NULL,
+        data_conexao TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+        PRIMARY KEY (nome, marca, modelo)
+      )
     `);
   }
 

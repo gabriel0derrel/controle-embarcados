@@ -1,6 +1,7 @@
 import { Controller, OnModuleDestroy, OnModuleInit } from '@nestjs/common';
 import { EventPattern, Payload } from '@nestjs/microservices';
 import { JogoGateway } from './jogo/jogo.gateway';
+import { PrismaService } from './prisma/prisma.service';
 import mqtt, { MqttClient } from 'mqtt';
 
 @Controller()
@@ -8,7 +9,10 @@ export class MqttController implements OnModuleInit, OnModuleDestroy {
   private readonly statusTopic = 'esp32_genius/status';
   private mqttStatusClient: MqttClient | null = null;
 
-  constructor(private readonly jogoGateway: JogoGateway) {}
+  constructor(
+    private readonly jogoGateway: JogoGateway,
+    private readonly prisma: PrismaService,
+  ) {}
 
   onModuleInit() {
     this.conectarPresenca();
@@ -50,7 +54,7 @@ export class MqttController implements OnModuleInit, OnModuleDestroy {
       });
     });
 
-    client.on('message', (topic, payload, packet) => {
+    client.on('message', async (topic, payload, packet) => {
       if (topic !== this.statusTopic) {
         return;
       }
@@ -60,9 +64,18 @@ export class MqttController implements OnModuleInit, OnModuleDestroy {
         return;
       }
 
-      const online = this.normalizarStatus(payload);
+      const raw = payload.toString('utf-8');
+      const data = this.parseJson(raw);
+
+      try {
+        await this.salvarDadosEmbarcado(data);
+      } catch (err) {
+        console.error('Falha ao salvar dados do embarcado:', err);
+      }
+
+      const online = this.normalizarStatus(raw, data);
       console.log('Status recebido do ESP32:', {
-        raw: payload.toString('utf-8'),
+        raw,
         online,
       });
       this.jogoGateway.registrarEmbarcadoStatus(online);
@@ -79,38 +92,77 @@ export class MqttController implements OnModuleInit, OnModuleDestroy {
     this.mqttStatusClient = client;
   }
 
-  private normalizarStatus(payload: Buffer): boolean {
-    const raw = payload.toString('utf-8').trim();
+  private async salvarDadosEmbarcado(data: unknown) {
+    if (!data || typeof data !== 'object') {
+      return;
+    }
+
+    const nome = this.getStringField(data, 'nome');
+    const marca = this.getStringField(data, 'marca');
+    const modelo = this.getStringField(data, 'modelo');
+    const ip = this.getStringField(data, 'ip');
+
+    if (!nome || !marca || !modelo || !ip) {
+      return;
+    }
+
+    await this.prisma.embarcado.upsert({
+      data: {
+        nome,
+        marca,
+        modelo,
+        ip,
+      },
+    });
+  }
+
+  private getStringField(data: object, field: string): string | null {
+    const value = (data as Record<string, unknown>)[field];
+
+    if (typeof value !== 'string') {
+      return null;
+    }
+
+    const trimmed = value.trim();
+    return trimmed ? trimmed : null;
+  }
+
+  private parseJson(raw: string): unknown {
+    try {
+      return JSON.parse(raw);
+    } catch {
+      return null;
+    }
+  }
+
+  private normalizarStatus(rawPayload: string, parsedPayload: unknown): boolean {
+    const raw = rawPayload.trim();
 
     if (!raw) {
       return false;
     }
 
-    try {
-      const data = JSON.parse(raw);
-
-      if (typeof data === 'boolean') {
-        return data;
-      }
-
-      if (typeof data === 'string') {
-        return this.parseBoolean(data);
-      }
-
-      if (data && typeof data === 'object') {
-        if (typeof data.online === 'boolean') {
-          return data.online;
-        }
-
-        if (typeof data.status === 'string') {
-          return this.parseBoolean(data.status);
-        }
-      }
-    } catch {
-      return this.parseBoolean(raw);
+    if (typeof parsedPayload === 'boolean') {
+      return parsedPayload;
     }
 
-    return false;
+    if (typeof parsedPayload === 'string') {
+      return this.parseBoolean(parsedPayload);
+    }
+
+    if (parsedPayload && typeof parsedPayload === 'object') {
+      const data = parsedPayload as Record<string, unknown>;
+
+      if (typeof data.online === 'boolean') {
+        return data.online;
+      }
+
+      if (typeof data.status === 'string') {
+        return this.parseBoolean(data.status);
+      }
+    }
+
+    return this.parseBoolean(raw);
   }
 
   private parseBoolean(value: string): boolean {

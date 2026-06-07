@@ -15,9 +15,12 @@ model Partida {
 }
 
 model Device {
-  id        Int      @id @default(autoincrement())
-  nome      String
-  ip        String
-  ativo     Boolean  @default(true)
-  createdAt DateTime @default(now())
+  nome         String   @db.VarChar(100)
+  marca        String   @db.VarChar(100)
+  modelo       String   @db.VarChar(100)
+  ip           String   @db.VarChar(45)
+  dataConexao  DateTime @default(now()) @map("data_conexao") @db.Timestamptz(6)
+
+  @@id([nome, marca, modelo])
+  @@map("embarcados")
 }
