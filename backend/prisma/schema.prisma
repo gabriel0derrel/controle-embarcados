@@ -1,15 +1,26 @@
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
   provider = "prisma-client-js"
 }
 
-model Ranking {
-  id         Int      @id @default(autoincrement())
-  apelido    String
-  fase       Int
-  created_at DateTime @default(now())
+datasource db {
+  provider = "postgresql"
+}
+
+model Partida {
+  id        Int      @id @default(autoincrement())
+  apelido   String   @db.VarChar(20)
+  fase      Int
+  createdAt DateTime @default(now())
+  @@index([fase])
+}
+
+model Device {
+  nome         String   @db.VarChar(100)
+  marca        String   @db.VarChar(100)
+  modelo       String   @db.VarChar(100)
+  ip           String   @db.VarChar(45)
+  dataConexao  DateTime @default(now()) @map("data_conexao") @db.Timestamptz(6)
+
+  @@id([nome, marca, modelo])
+  @@map("embarcados")
 }

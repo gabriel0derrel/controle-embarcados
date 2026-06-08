@@ -1,21 +1,83 @@
+import { useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useMqtt } from '../hooks/useMqtt';
 import type { CorGenius } from '../hooks/useMqtt';
 import { GeniusPad } from '../components/GeniusPad';
 
+const LAST_GAME_PHASE_KEY = 'genius:lastGamePhase';
+
+function limparFaseFinalSalva() {
+  localStorage.removeItem(LAST_GAME_PHASE_KEY);
+}
+
 export function JogoPage() {
+  const navigate = useNavigate();
   const { connected, estado, enviarLed, enviarJogo } = useMqtt();
+  const lastAutoConfirmKeyRef = useRef<string | null>(null);
+  const lastGameOverPhaseRef = useRef<number | null>(null);
 
   const handleColorPress = (cor: CorGenius) => {
-    enviarLed(cor);
+    void enviarLed(cor);
   };
 
   const handleIniciar = () => {
-    enviarJogo('iniciar');
+    limparFaseFinalSalva();
+    void enviarJogo('iniciar');
   };
 
   const handleReiniciar = () => {
-    enviarJogo('reiniciar');
+    limparFaseFinalSalva();
+    void enviarJogo('reiniciar');
   };
+
+  useEffect(() => {
+    if (!estado || estado.tela !== 'aguardando') {
+      lastAutoConfirmKeyRef.current = null;
+      return;
+    }
+
+    const sequenceComplete =
+      estado.seq_len > 0 && estado.entrada.length === estado.seq_len;
+
+    if (!sequenceComplete) {
+      lastAutoConfirmKeyRef.current = null;
+      return;
+    }
+
+    const confirmKey = `${estado.fase}:${estado.seq_len}:${estado.entrada.join(',')}`;
+
+    if (lastAutoConfirmKeyRef.current === confirmKey) {
+      return;
+    }
+
+    lastAutoConfirmKeyRef.current = confirmKey;
+    void enviarJogo('confirmar');
+  }, [enviarJogo, estado]);
+
+  useEffect(() => {
+    if (!estado || estado.tela !== 'errado') {
+      if (estado?.tela !== 'errado') {
+        lastGameOverPhaseRef.current = null;
+      }
+      return;
+    }
+
+    if (lastGameOverPhaseRef.current === estado.fase) {
+      return;
+    }
+
+    lastGameOverPhaseRef.current = estado.fase;
+    localStorage.setItem(LAST_GAME_PHASE_KEY, String(estado.fase));
+    navigate('/ranking', {
+      state: { faseFinal: estado.fase },
+      replace: true,
+    });
+  }, [estado, navigate]);
+
+  const aguardaConfirmacao =
+    estado?.tela === 'aguardando' &&
+    estado.seq_len > 0 &&
+    estado.entrada.length === estado.seq_len;
 
   return (
     <div className="container py-4">
@@ -29,7 +91,7 @@ export function JogoPage() {
                 <div className="d-flex align-items-center gap-2">
                   <span className={`rounded-circle ${connected ? 'bg-success' : 'bg-danger'}`} style={{ width: '8px', height: '8px' }}></span>
                   <small className="text-secondary fw-medium">
-                    {connected ? 'MQTT Conectado' : 'Desconectado'}
+                    {connected ? 'Embarcado Conectado' : 'Embarcado Desconectado'}
                   </small>
                 </div>
               </div>
@@ -62,7 +124,7 @@ export function JogoPage() {
               {/* Pad Genius */}
               <GeniusPad
                 onColorPress={handleColorPress}
-                disabled={!connected || estado?.tela !== 'aguardando'}
+                disabled={!connected || estado?.tela !== 'aguardando' || aguardaConfirmacao}
               />
 
               {/* Botões de controle */}

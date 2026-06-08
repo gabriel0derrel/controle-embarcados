@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useMqtt } from '../hooks/useMqtt';
 
 interface RankingEntry {
   id: number;
@@ -7,17 +8,43 @@ interface RankingEntry {
   fase: number;
 }
 
+const LAST_GAME_PHASE_KEY = 'genius:lastGamePhase';
+const MAX_NOME_LENGTH = 20;
+
+function carregarFaseFinal(locationState: unknown): number | null {
+  const faseDaRota = (locationState as { faseFinal?: unknown } | null)?.faseFinal;
+
+  if (typeof faseDaRota === 'number' && Number.isInteger(faseDaRota) && faseDaRota > 0) {
+    return faseDaRota;
+  }
+
+  const faseArmazenada = Number(localStorage.getItem(LAST_GAME_PHASE_KEY));
+
+  if (Number.isInteger(faseArmazenada) && faseArmazenada > 0) {
+    return faseArmazenada;
+  }
+
+  return null;
+}
+
 export function RankingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const { enviarJogo, resetarEstadoJogo } = useMqtt();
   const [apelido, setApelido] = useState('');
   const [salvando, setSalvando] = useState(false);
   const [salvo, setSalvo] = useState(false);
   const [ranking, setRanking] = useState<RankingEntry[]>([]);
-  const faseFinal = 5; // TODO: receber do jogo
+  const faseFinal = carregarFaseFinal(location.state);
+  const nomeValido = apelido.trim().length >= 1 && apelido.trim().length <= MAX_NOME_LENGTH;
 
   const carregarRanking = async () => {
     try {
       const res = await fetch('/api/ranking');
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status}`);
+      }
+
       const data = await res.json();
       setRanking(data);
     } catch (e) {
@@ -30,14 +57,24 @@ export function RankingPage() {
   }, []);
 
   const handleSalvar = async () => {
-    if (apelido.length !== 3) return;
+    if (!nomeValido || !Number.isInteger(faseFinal) || faseFinal < 1) return;
+    const fase = faseFinal;
+
     setSalvando(true);
     try {
-      await fetch('/api/ranking', {
+      const response = await fetch('/api/ranking', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ apelido, fase: faseFinal }),
+        body: JSON.stringify({ apelido: apelido.trim(), fase }),
       });
+
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      localStorage.removeItem(LAST_GAME_PHASE_KEY);
+      resetarEstadoJogo();
+      await enviarJogo('reiniciar');
       setSalvo(true);
       carregarRanking();
     } catch (e) {
@@ -55,8 +92,12 @@ export function RankingPage() {
           {/* Header */}
           <div className="mb-4">
             <div className="text-secondary small text-uppercase mb-2">Fim de Jogo</div>
-            <div className="display-1 fw-bold" style={{ color: '#ffd966' }}>{faseFinal}ª</div>
-            <div className="text-secondary">Fase alcançada</div>
+            <div className="display-1 fw-bold" style={{ color: '#ffd966' }}>
+              {faseFinal ? `${faseFinal}ª` : '-'}
+            </div>
+            <div className="text-secondary">
+              {faseFinal ? 'Fase alcançada' : 'Nenhuma partida finalizada encontrada'}
+            </div>
           </div>
 
           {/* Card */}
@@ -68,25 +109,24 @@ export function RankingPage() {
                 <>
                   <div className="mb-4">
                     <label className="form-label text-secondary small fw-bold text-uppercase mb-2">
-                      Apelido (3 letras)
+                      Nome (até 20 caracteres)
                     </label>
                     <input
                       type="text"
-                      className="form-control form-control-lg text-center fs-3 fw-bold text-uppercase border"
-                      placeholder="AAA"
-                      maxLength={3}
+                      className="form-control form-control-lg text-center fs-4 fw-bold border"
+                      placeholder="Seu nome"
+                      maxLength={MAX_NOME_LENGTH}
                       value={apelido}
-                      onChange={(e) => setApelido(e.target.value.toUpperCase().replace(/[^A-Z]/g, '').slice(0, 3))}
+                      onChange={(e) => setApelido(e.target.value.slice(0, MAX_NOME_LENGTH))}
                       disabled={salvando}
-                      style={{ letterSpacing: '0.5em' }}
                     />
                   </div>
                   <div className="d-grid gap-2 mb-4">
                     <button
                       className="btn btn-primary fw-semibold d-flex align-items-center justify-content-center gap-2 opacity-50"
                       onClick={handleSalvar}
-                      disabled={apelido.length !== 3 || salvando}
-                      style={{ cursor: apelido.length !== 3 ? 'not-allowed' : 'pointer' }}
+                      disabled={!nomeValido || salvando || !faseFinal}
+                      style={{ cursor: !nomeValido || salvando || !faseFinal ? 'not-allowed' : 'pointer' }}
                     >
                       {salvando ? (
                         <>
@@ -124,7 +164,7 @@ export function RankingPage() {
                       <thead className="bg-light border-bottom">
                         <tr>
                           <th className="text-center text-secondary small text-uppercase py-3" style={{ width: '60px' }}>Pos</th>
-                          <th className="text-secondary small text-uppercase py-3">Apelido</th>
+                          <th className="text-secondary small text-uppercase py-3">Nome</th>
                           <th className="text-end text-secondary small text-uppercase py-3 pe-4">Fase</th>
                         </tr>
                       </thead>
@@ -136,7 +176,7 @@ export function RankingPage() {
                                 {index + 1}
                               </span>
                             </td>
-                            <td className="fw-bold text-dark" style={{ letterSpacing: '0.2em' }}>
+                            <td className="fw-bold text-dark">
                               {entry.apelido}
                             </td>
                             <td className="text-end fw-bold fs-5 pe-4 text-dark">

@@ -18,6 +18,7 @@ export class JogoGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   server: Server;
 
   private mqttClient: ClientProxy;
+  private embarcadoOnline = false;
 
   constructor() {
     this.mqttClient = ClientProxyFactory.create({
@@ -34,6 +35,7 @@ export class JogoGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
 
   handleConnection(client: Socket) {
     console.log(`Cliente conectado: ${client.id}`);
+    client.emit('embarcado-status', this.getEmbarcadoSnapshot());
   }
 
   handleDisconnect(client: Socket) {
@@ -43,5 +45,26 @@ export class JogoGateway implements OnGatewayInit, OnGatewayConnection, OnGatewa
   // Envia estado para todos os clientes conectados
   broadcastEstado(estado: any) {
     this.server.emit('estado', estado);
+  }
+
+  getEmbarcadoOnline() {
+    return this.embarcadoOnline;
+  }
+
+  getEmbarcadoSnapshot() {
+    return {
+      online: this.embarcadoOnline,
+      lastSeenAt: null,
+    };
+  }
+
+  registrarEmbarcadoStatus(online: boolean) {
+    if (this.embarcadoOnline === online) {
+      this.server.emit('embarcado-status', this.getEmbarcadoSnapshot());
+      return;
+    }
+
+    this.embarcadoOnline = online;
+    this.server.emit('embarcado-status', this.getEmbarcadoSnapshot());
   }
 }

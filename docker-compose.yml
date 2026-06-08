@@ -47,7 +47,7 @@ services:
       - app_network
     environment:
       DATABASE_URL: postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB}
-      MQTT_URL: ${MQTT_URL} # <--- URL usando o nome do serviço no Docker
+      MQTT_URL: mqtt://mosquitto:1883
 
   # Serviço de Frontend
   frontend:
