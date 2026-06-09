@@ -29,28 +29,26 @@ docker compose up --build -d
 
 ### Aplicar migrações do banco (Prisma)
 
-Após o banco estar disponível você precisa gerar o client Prisma e aplicar a migração inicial. O Prisma precisa da variável `DATABASE_URL` do `.env` raiz. Execute um dos comandos abaixo:
+Após o banco estar disponível, gere o client Prisma e aplique a migração inicial. O Prisma precisa da variável `DATABASE_URL` no `.env` do backend.
 
 **Opção 1: no host (padrão para desenvolvimento):**
 
 ```bash
-# Copiar o .env da raiz para o backend (Prisma vai ler)
 cp .env backend/.env
-
-# Instalar dependências e aplicar migração
 cd backend
 npm install
+npx prisma generate
 npx prisma migrate dev --name init
 ```
 
 **Opção 2: dentro do container (ambiente Docker):**
 
 ```bash
-docker compose exec backend sh -c "cp ../.env .env && npm install && npx prisma migrate dev --name init"
+cp .env backend/.env
+docker compose exec backend sh -c "npm install && npx prisma generate && npx prisma migrate dev --name init"
 ```
 
-> **Observação**: `npm install` executa `prisma generate` via `postinstall`, garantindo que o client Prisma seja gerado. O Prisma procura por `.env` na pasta raiz do projeto ou onde o comando é executado.
-
+> **Observação**: o `backend` não define um `postinstall` que execute `prisma generate`, então é preciso rodar `npx prisma generate` explicitamente antes da migração.
 
 ### Acessando
 
